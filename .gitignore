@@ -4,3 +4,7 @@ venv/
 env/
 # файл с токеном
 .env
+# Локальное окружение, созданное в course_bot
+course_bot/lib/
+course_bot/include/
+course_bot/bin/
