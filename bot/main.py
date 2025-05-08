@@ -11,3 +11,12 @@ logging.basicConfig()(
 )
 logger = logging.getLogger(__name__) 
 logger.info("Бот запущен!")
+bot = Bot(token=BOT_TOKEN, parse_mode = ParseMode.HTML)
+dp = Dispatcher(memory = MemoryStorage)
+register_handlers(dp)
+
+async def main():
+    await dp.start_polling(bot)
+if __name__ == "__name__":
+    asyncio.run(main())
+
