@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KoreaBox</title>
+  <link rel="stylesheet" href="home_page.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <header>
+    <div class="logo">🇰🇷 KoreaBox</div>
+  </header>
+
+  <nav class="category-nav">
+    <button onclick="scrollToSection('Еда')"> Еда</button>
+    <button onclick="scrollToSection('Сладости и снеки')"> Сладости и снеки</button>
+    <button onclick="scrollToSection('Напитки')"> Напитки</button>
+    <button onclick="scrollToSection('Косметика')"> Косметика</button>
+    <button onclick="scrollToSection('Одежда')"> Одежда</button>
+    <button onclick="scrollToSection('Альбомы')"> Альбомы</button>
+    <button onclick="scrollToSection('Прочее')">📦 Прочее</button>
+  </nav>
+
+  <main class="main-wrapper" id="product-container">
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    function scrollToSection(category) {
+      const section = document.querySelector(`[data-category="${category}"]`);
+      if (section) section.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script> 
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
