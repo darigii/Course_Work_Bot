@@ -2,6 +2,10 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
 import os
+import httpx
+import json
+import requests
+
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -116,7 +120,7 @@ def update_product():
 
 @app.route("/submit_order", methods=["POST"])
 def submit_order():
-    data = request.json
+    data = request.json or {}
     cart_items = data.get("cart", [])
     cart_text = ""
     for item in cart_items:
@@ -126,44 +130,47 @@ def submit_order():
         subtotal = price * count
         cart_text += f"• {name} × {count} = {subtotal}₽\n"
 
+
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO orders (telegram_id, name, phone, address, payment_method, cart_json, total_price, created_at)
+            INSERT INTO orders
+            (telegram_id, name, phone, address, payment_method, cart_json, total_price, created_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
         """, (
-            data["telegram_id"],
-            data["name"],
-            data["phone"],
-            data["address"],
-            data["payment_method"],
+            data.get("telegram_id"),
+            data.get("name"),
+            data.get("phone"),
+            data.get("address"),
+            data.get("payment_method"),
             str(cart_items),
-            data["total_price"]
+            data.get("total_price")
         ))
         conn.commit()
 
-    # Уведомление в Telegram
+
     try:
         BOT_TOKEN = os.getenv("BOT_TOKEN")
         chat_id = data.get("telegram_id")
         if BOT_TOKEN and chat_id:
             text = (
-                f"📦 <b>Ваш заказ подтверждён!</b>\n\n"
-                f"👤 Имя: {data.get('name')}\n"
-                f"📱 Телефон: {data.get('phone')}\n"
-                f"🏡 Адрес: {data.get('address')}\n"
-                f"💳 Оплата: {data.get('payment_method')}\n"
-                f"🛒 Товары:\n{cart_text}\n"
-                f"💰 Итого: {data.get('total_price')}₽"
+                f" <b>Ваш заказ подтверждён!</b>\n\n"
+                f" Имя: {data.get('name')}\n"
+                f" Телефон: {data.get('phone')}\n"
+                f" Адрес: {data.get('address')}\n"
+                f" Оплата: {data.get('payment_method')}\n"
+                f" Товары:\n{cart_text}\n"
+                f" Итого: {data.get('total_price')}₽"
             )
             requests.post(
                 f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
                 json={"chat_id": chat_id, "text": text, "parse_mode": "HTML"}
             )
     except Exception as e:
-        print("Ошибка при отправке сообщения:", e)
+        # Просто логируем — сама отправка не должна ломать ответ клиенту
+        print("Ошибка при отправке уведомления в Telegram:", e)
 
-    return jsonify({"status": "ok"})
+    return jsonify({"status": "ok"}), 200
 
 """
 if __name__ == "__main__":
