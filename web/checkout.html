@@ -44,10 +44,11 @@
   </main>
 
   <script>
+    
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    
+    // Показываем корзину и считаем сумму
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
     const container = document.getElementById('order-items');
     let total = 0;
@@ -67,6 +68,7 @@
     });
     document.getElementById('total-price').textContent = total;
 
+    
     ymaps.ready(() => {
       try {
         const suggestView = new ymaps.SuggestView("address");
@@ -82,6 +84,7 @@
       }
     });
 
+    // Отправка заказа
     document.getElementById("submit-order").addEventListener("click", async () => {
       const name = document.getElementById("name").value.trim();
       const phone = document.getElementById("phone").value.trim();
@@ -135,6 +138,7 @@
       }
     });
   </script>
+  
 </body>
 </html>
 
