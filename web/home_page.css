@@ -1,0 +1,222 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #d3d1d28b;
+  color: #333;
+  padding-bottom: 32px;
+  overflow-x: hidden;
+}
+
+header {
+  background-color: #4e78c2;
+  height: auto;
+  padding: 12px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  border-bottom: 2px solid #4e78c2;
+  display: flex;
+  justify-content: center;
+}
+
+.category-nav {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: auto;
+  gap: 8px;
+  padding: 12px;
+  background-color: transparent;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.category-nav button:nth-child(n+7) {
+  grid-column: span 2;
+}
+
+.category-nav button {
+  font-size: 14px;
+  padding: 6px 12px;
+  border: none;
+  background-color: #75b3ff;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.category-nav button:hover,
+.category-nav button:focus {
+  background-color: #4e78c2;
+  color: white;
+}
+
+.main-wrapper {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Заголовок основной категории, как плашка */
+.main-category-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 40px 0 12px;
+  padding: 8px 12px;
+  background-color: #4e79c2ca;
+  border-radius: 12px;
+  width: fit-content;
+  color: #ffffff;
+}
+
+/* Секция для подкатегории без фона и рамок */
+.category-section {
+  scroll-margin-top: 90px;
+  padding: 12px 0;
+  border-radius: 0;
+  margin-bottom: 24px;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+/* Оформление заголовка подкатегории */
+.category-section h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  padding-left: 6px;
+  color: #000000;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;        
+  margin: 0 auto;          
+  box-sizing: border-box;
+}
+
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* выталкивает кнопку вниз */
+  align-items: center;
+  width: 120px;
+  height: 270px; /* одинаковая высота карточки */
+  font-size: 13px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.product-card img {
+  width: 100%;
+  max-height: 140px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.product-card h3 {
+  font-size: 12px;
+  margin: 6px 0 4px;
+  flex-grow: 1; /* позволяет заголовку занимать пространство */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 4px;
+}
+
+.product-card p {
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.product-card button {
+  background-color: #75b3ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  min-width: 80px;
+  cursor: pointer;
+}
+
+.product-card button:hover {
+  background-color: #fe8dc2;
+}
+
+.product-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.counter button {
+  padding: 4px 8px;
+  font-size: 12px;
+  min-width: 32px;
+  height: 32px;
+  line-height: 1;
+}
+
+.counter.hidden {
+  display: none;
+}
+
+.product-controls .add-btn.hidden {
+  display: none;
+}
+
+.cart-button {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #75b3ff;
+  color: white;
+  padding: 14px 36px;
+  border-radius: 32px;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 999;
+  transition: all 0.2s ease;
+}
+
+.cart-button:hover {
+  background-color: #5595ff;
+}
+
+.cart-button {
+  text-decoration: none;
+}
+
