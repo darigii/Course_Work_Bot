@@ -1,7 +1,7 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-const API_URL = "https://darigii.pythonanywhere.com/products";
+
 const categoryOrder = ["Еда", "Сладости и снеки", "Напитки", "Косметика", "Одежда", "Альбомы", "Прочее"];
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -26,7 +26,7 @@ function updateCartUI() {
 }
 
 // Получение товаров
-fetch(API_URL)
+fetch("https://darigii.pythonanywhere.com/products?nocache=" + Date.now())
   .then(res => res.ok ? res.json() : Promise.reject(`HTTP ${res.status}`))
   .then(data => {
     const container = document.getElementById("product-container");
