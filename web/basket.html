@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина</title>
+    <link rel="stylesheet" href="basket.css">
+</head>
+<body>
+    <div class="header">Корзина</div>
+
+    <div class="cart-container">
+        <div class="cart-items" id="cart-items"></div>
+
+        <div class="cart-summary">
+            <p>Итого: <span id="total-price">0</span> ₽</p>
+            <a href="checkout.html">
+                <button class="checkout-btn">Оформить заказ</button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        const container = document.getElementById('cart-items');
+        let total = 0;
+    
+        cartItems.forEach(item => {
+            const count = item.count || 1;
+            const itemTotal = item.price * count;
+            total += itemTotal;
+    
+            const div = document.createElement('div');
+            div.className = 'cart-item';
+            div.innerHTML = `
+                <img src="${item.img}" alt="${item.name}">
+                <div class="item-info">
+                    <p class="item-name">${item.name.split(' - ')[0]}</p>
+                    <p class="item-price">${item.price} ₽ × ${count} = <strong>${itemTotal} ₽</strong></p>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    
+        document.getElementById('total-price').textContent = total;
+    </script>    
+</body>
+</html>
+
