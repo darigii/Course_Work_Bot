@@ -57,13 +57,13 @@ def register_user(telegram_id, full_name):
             VALUES (?, ?, ?, ?, 1)
         """, (telegram_id, full_name, "", datetime.now().isoformat()))
         conn.commit()
-# Сохраняет email пользователя в базу по id
+# сохраняет email пользователя в базу по id
 def save_email_to_user(telegram_id, email):
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("UPDATE users SET email = ? WHERE telegram_id = ?", (email, telegram_id))
         conn.commit()
-# Добавляет новый товар в таблицу products
+# добавляет новый товар в таблицу products
 def add_product(name, price, image_url, file_id, category):
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
@@ -72,13 +72,13 @@ def add_product(name, price, image_url, file_id, category):
             (name, price, image_url, file_id, category)
         )
         conn.commit()
-# Возвращает список всех товаров из таблицы products
+# возвращает список всех товаров из таблицы products
 def get_all_products():
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT id, name, price, image_url, file_id, category FROM products")
         return cursor.fetchall()
-# Удаляет товар по названию и категории
+# удаляет товар по названию и категории
 def delete_product_by_details(name, subcategory, main_category):
     category = f"{main_category.strip()} > {subcategory.strip()}"
     with sqlite3.connect(DB_PATH) as conn:
@@ -89,7 +89,7 @@ def delete_product_by_details(name, subcategory, main_category):
         )
         conn.commit()
         return cursor.rowcount > 0
-# Удаляет товар по точному названию из таблицы products
+# удаляет товар по точному названию из таблицы products
 def delete_product_by_title(title):
     with sqlite3.connect("database/db.sqlite3") as conn:
         cursor = conn.cursor()
