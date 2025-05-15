@@ -95,3 +95,35 @@ def delete_product_by_title(title):
         cursor = conn.cursor()
         cursor.execute("DELETE FROM products WHERE name = ?", (title,))
         conn.commit()
+
+def add_order(telegram_id, name, phone, address, payment_method, cart_json, total_price):
+    created = datetime.now().isoformat()
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO orders
+            (telegram_id, name, phone, address, payment_method, cart_json, total_price, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            telegram_id,
+            name,
+            phone,
+            address,
+            payment_method,
+            cart_json,
+            total_price,
+            created
+        ))
+        conn.commit()
+
+def get_recent_orders(limit=10):
+  
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id, telegram_id, name, total_price, created_at
+            FROM orders
+            ORDER BY id DESC
+            LIMIT ?
+        """, (limit,))
+        return cursor.fetchall()
