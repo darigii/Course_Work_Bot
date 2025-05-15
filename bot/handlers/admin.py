@@ -244,7 +244,7 @@ async def cancel(callback: CallbackQuery, state: FSMContext):
 async def start_edit(callback: CallbackQuery, state: FSMContext):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=cat, callback_data=f"edit_cat:{cat}")]
-        for cat in ["🍜 Еда", "🍪 Сладости и снеки", "🧋 Напитки", "🧴 Косметика", "👚 Одежда", "🎵 Альбомы", "📦 Прочее"]
+        for cat in [" Еда", "Сладости и снеки", "Напитки", "Косметика", "Одежда", "Альбомы", "Прочее"]
     ])
     await callback.message.answer("Выберите категорию:", reply_markup=keyboard)
     await state.set_state(EditFlow.choosing_category)
@@ -355,7 +355,7 @@ async def apply_edit(message: Message, state: FSMContext):
 async def start_viewing(callback: CallbackQuery, state: FSMContext):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=cat, callback_data=f"view_cat:{cat}")]
-        for cat in ["🍜 Еда", "🍪 Сладости и снеки", "🧋 Напитки", "🧴 Косметика", "👚 Одежда", "🎵 Альбомы", "📦 Прочее"]
+        for cat in [" Еда", "Сладости и снеки", "Напитки", "Косметика", "Одежда", "Альбомы", "Прочее"]
     ])
     await callback.message.answer("Выберите категорию:", reply_markup=keyboard)
     await state.set_state(ViewFlow.choosing_category)
