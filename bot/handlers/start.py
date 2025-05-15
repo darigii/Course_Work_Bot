@@ -29,3 +29,19 @@ async def show_menu(message: Message):
             [InlineKeyboardButton(text="Админ-панель", callback_data="admin")]
         ])
     await message.answer("📋 Главное меню:", reply_markup=menu)
+support_router = Router()
+@support_router.message(Command("help"))
+async def cmd_support(message: Message):
+    kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [ InlineKeyboardButton(
+                text="💬 Связаться с поддержкой",
+                url="https://t.me/koreaboxsupport"
+              )
+            ]
+        ]
+    )
+    await message.answer(
+        "Если возникли вопросы или проблемы, напишите в техподдержку:",
+        reply_markup=kb
+    )
