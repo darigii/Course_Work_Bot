@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Оформление заказа</title>
+  <link rel="stylesheet" href="checkout.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js" type="text/javascript"></script>
+  <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=ВАШ_API_КЛЮЧ" type="text/javascript"></script>
+  <style>
+    .ymaps-suggest-view {
+      position: absolute !important;
+      z-index: 10000 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Оформление заказа</div>
+
+  <main class="checkout-container">
+    <h3>Ваш заказ</h3>
+    <div class="order-items" id="order-items"></div>
+
+    <div class="total">
+      <p>Итого: <span id="total-price">0</span> ₽</p>
+    </div>
+
+    <h3>Способ оплаты</h3>
+    <select id="payment-method">
+      <option>Картой онлайн</option>
+      <option>Наличными при получении</option>
+    </select>
+
+    <h3>Информация о доставке</h3>
+    <input type="text" id="name" placeholder="Имя" />
+    <input type="tel" id="phone" placeholder="Номер телефона" />
+
+    <h3>Платежный адрес</h3>
+    <input type="text" id="country" placeholder="Россия">
+    <input type="text" id="address" placeholder="Улица, дом, квартира" autocomplete="off" />
+    <p id="coords" style="font-size: 14px; color: gray;"></p>
+
+    <button class="order-btn" id="submit-order">Оформить заказ</button>
+  </main>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    const container = document.getElementById('order-items');
+    let total = 0;
+    cartItems.forEach(item => {
+      const count = item.count || 1;
+      const subtotal = item.price * count;
+      total += subtotal;
+      const div = document.createElement('div');
+      div.className = 'order-item';
+      div.innerHTML = `
+        <img src="${item.img}" alt="${item.name}">
+        <div class="item-info">
+          <p>${item.name.split(' - ')[0]}</p>
+          <p>${item.price} ₽ × ${count} = <strong>${subtotal} ₽</strong></p>
+        </div>`;
+      container.appendChild(div);
+    });
+    document.getElementById('total-price').textContent = total;
+
+    ymaps.ready(() => {
+      try {
+        const suggestView = new ymaps.SuggestView("address");
+        suggestView.events.add("select", event => {
+          ymaps.geocode(event.get("item").value).then(res => {
+            const coords = res.geoObjects.get(0).geometry.getCoordinates();
+            document.getElementById("coords").textContent =
+              `Координаты: ${coords[0]}, ${coords[1]}`;
+          });
+        });
+      } catch (e) {
+        console.warn("Yandex Suggest не доступен:", e);
+      }
+    });
+
+    document.getElementById("submit-order").addEventListener("click", async () => {
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const payment = document.getElementById("payment-method").value;
+      if (!name || !phone || !address) {
+        return alert("Пожалуйста, заполните все поля доставки.");
+      }
+
+      const payload = {
+        telegram_id: tg.initDataUnsafe?.user?.id || null,
+        name, phone, address,
+        payment_method: payment,
+        cart: cartItems,
+        total_price: total
+      };
+
+      let response;
+      try {
+        response = await fetch("https://darigii.pythonanywhere.com/submit_order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+      } catch (networkError) {
+        console.error("Network error:", networkError);
+        return alert("Не удалось связаться с сервером.");
+      }
+
+      if (!response.ok) {
+        const txt = await response.text();
+        console.error("Server error response:", txt);
+        return alert("❌ Ошибка оформления заказа. Попробуйте позже.");
+      }
+
+      let result;
+      try {
+        result = await response.json();
+      } catch (parseError) {
+        console.error("Invalid JSON from server:", await response.text());
+        return alert("❌ Некорректный ответ сервера.");
+      }
+
+      if (result.status === "ok") {
+        alert("✅ Спасибо за заказ!");
+        localStorage.removeItem("cart");
+        window.location.href = "index.html";
+      } else {
+        console.error("Server returned error:", result);
+        alert("❌ Ошибка оформления заказа. Попробуйте позже.");
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
