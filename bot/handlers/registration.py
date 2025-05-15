@@ -9,13 +9,15 @@ registration_router = Router()
 
 class EmailFSM(StatesGroup):
     waiting_for_email = State()
+    
+# кнопка регистрации 
 @registration_router.callback_query(F.data == "register")
 async def handle_register_callback(callback: CallbackQuery, state: FSMContext):
     user = get_user_by_telegram_id(callback.from_user.id)
     if user:
         await callback.message.edit_text("📌 Вы уже зарегистрированы.")
         menu = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🛍 Перейти к покупкам", web_app=WebAppInfo(url="https://lambent-tartufo-95748f.netlify.app/"))],
+        [InlineKeyboardButton(text="🛍 Перейти к покупкам", web_app=WebAppInfo(url="https://lucky-naiad-2d5815.netlify.app/"))],
         [InlineKeyboardButton(text=" Админ-панель", callback_data="admin")]])
         await callback.message.answer("📦 Вот наш каталог:", reply_markup=menu)
         await callback.answer()
@@ -24,7 +26,7 @@ async def handle_register_callback(callback: CallbackQuery, state: FSMContext):
         await callback.message.edit_text("📩 Пожалуйста, введите ваш e-mail для получения скидок и новостей:")
         await state.set_state(EmailFSM.waiting_for_email)
     await callback.answer("Регистрация прошла успешно!\n")
-
+# проверка на ввод email
 @registration_router.message(EmailFSM.waiting_for_email)
 async def process_email(message: Message, state: FSMContext):
     email = message.text.strip()
@@ -33,25 +35,22 @@ async def process_email(message: Message, state: FSMContext):
     if not match:
         await message.answer("E-mail выглядит некорректным. Пример: example@mail.ru")
         return
-    
     tld = match.group(1)
     if tld not in valid_tlds:
         await message.answer(f" Домен '.{tld}' не поддерживается. Попробуй, например, .ru или .com.")
         return
-    
     save_email_to_user(message.from_user.id, email)
-
     await state.clear()
     menu = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🛍 Перейти к покупкам", web_app=WebAppInfo(url="https://lambent-tartufo-95748f.netlify.app/"))],
+        [InlineKeyboardButton(text="🛍 Перейти к покупкам", web_app=WebAppInfo(url="https://lucky-naiad-2d5815.netlify.app/"))],
         [InlineKeyboardButton(text=" Админ-панель", callback_data="admin")]])
     await message.answer("📬 E-mail сохранён! Вот наш каталог:", reply_markup=menu)
-
+# кнопка пропуска регистрации 
 @registration_router.callback_query(F.data == "skip_registration")
 async def handle_skip_registration(callback: CallbackQuery):
     await callback.message.edit_text("Вы отказались от регистрации. Каталог доступен ниже 👇")
     menu = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🛍 Перейти к покупкам", web_app=WebAppInfo(url="https://lambent-tartufo-95748f.netlify.app/"))],
+        [InlineKeyboardButton(text="🛍 Перейти к покупкам", web_app=WebAppInfo(url="https://lucky-naiad-2d5815.netlify.app/"))],
         [InlineKeyboardButton(text=" Админ-панель", callback_data="admin")]])
     await callback.message.answer("📦 Вот наш каталог:", reply_markup=menu)
     await callback.answer()
