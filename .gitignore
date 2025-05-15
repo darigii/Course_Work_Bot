@@ -8,3 +8,5 @@ env/
 course_bot/lib/
 course_bot/include/
 course_bot/bin/
+__pycache__/
+*.pyc
